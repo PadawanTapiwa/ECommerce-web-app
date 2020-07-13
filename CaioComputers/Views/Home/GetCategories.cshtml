@@ -1,0 +1,17 @@
+﻿@model IEnumerable<CaioComputers.Models.Category>
+
+<div class="card my-4">
+    <h5 class="card-header">Categories</h5>
+    <div class="card-body">
+        <div class="row">
+            <a href="@Url.Action("Products","Home")" class="col-md-6 text-decoration-none">All products</a>
+        </div>
+        @foreach (var cat in Model)
+        {
+            <div class="row">
+                <a href="@Url.Action("Products","Home", new {category=cat.Name })" class="col-md-6 text-decoration-none">@cat.Name</a>
+            </div>
+        }
+    </div>
+</div>
+

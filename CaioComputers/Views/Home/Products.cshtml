@@ -1,0 +1,96 @@
+﻿@using CaioComputers.Models
+@model IEnumerable<Product>
+
+@{
+    ViewBag.Title = "Products";
+    string placeholder = ViewBag.Search;
+    
+}
+
+<h2>Products</h2>
+
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+
+            <!-- Search Widget -->
+            <div class="card my-4">
+                <h5 class="card-header">Search</h5>
+                <div class="card-body">
+                    @using (Html.BeginForm("Products", "Home"))
+                    {
+                        <div class="input-group">
+                            <input name="search" type="text" class="form-control" placeholder="@placeholder">
+                            <span class="input-group-append">
+                                <button class="btn btn-secondary" type="button">Go!</button>
+                            </span>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!--category widget-->
+            @Html.Action("GetCategories", "Home")
+
+
+        </div>
+
+
+
+        <!--Content-->
+        <div class="col-md-9">
+
+            @if (Model.Count() == 0)
+            {
+                <div class="alert alert-warning" role="alert">
+                    <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                    No products found in this category.
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning" role="alert">
+                    <i class="fa fa-check-square" aria-hidden="true"></i>
+                    <strong>@Model.Count() products</strong> found in this category.
+                </div>
+            }
+
+            <div class="container">
+                <div class="row">
+                    @foreach (var prod in Model)
+                    {
+                        <div class="col-md-6 p-2 mb-3">
+                            <div class="card h-100">
+                                <a href="@Url.Action("Details","Home",new {id=prod.Id})">
+                                    <img src="@prod.Image" class="card-img-top" width:auto height="400" alt="@prod.Name" />
+                                </a>
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="@Url.Action("Details","Home",new {id=@prod.Id})" style="text-decoration:none">@prod.Name</a>
+                                    </h5>
+                                    <h6 class="text-danger">R @prod.Price</h6>
+                                    <div class="card-text">
+                                        <p>@(prod.Description.Substring(0, 50)+"...")</p>
+                                    </div>
+                                </div>
+                                <div class="card-footer text-center" style="color:goldenrod">
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    <i class="fa fa-star-half-full" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+</div>

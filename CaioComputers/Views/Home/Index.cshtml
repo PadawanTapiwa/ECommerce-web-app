@@ -1,0 +1,47 @@
+﻿@using CaioComputers.Models
+@model IEnumerable<Product>
+
+@{
+    ViewBag.Title = "Index";
+
+}
+
+<br />
+<br />
+<br />
+
+
+
+<br />
+<br />
+
+<div class="container">
+    <div class="row">
+        @foreach (var prod in Model)
+        {
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <a href="@Url.Action("Details","Home",new {id=prod.Id})">
+                    <img src="@prod.Image" class="card-img-top" width:auto height="400" alt="@prod.Name" />
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="@Url.Action("Details","Home",new {id=@prod.Id})" style="text-decoration:none">@prod.Name</a>
+                        </h5>
+                        <h6 class="text-danger">R @prod.Price</h6>
+                        <div class="card-text">
+                            <p>@(prod.Description.Substring(0, 50)+"...")</p>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center" style="color:goldenrod">
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        <i class="fa fa-star" aria-hidden="true"></i>
+                        <i class="fa fa-star-half-full" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
