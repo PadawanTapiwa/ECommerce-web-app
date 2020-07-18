@@ -3,71 +3,79 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+//using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CaioComputers;
 using CaioComputers.Controllers;
 using CaioComputers.Models;
+using NUnit.Framework;
+
 
 namespace CaioComputers.Tests.Controllers
 {
-    [TestClass]
+    [TestFixture]
     public class HomeControllerTest
     {
-        [TestMethod]
-        public void Index()
+        IProductRepo productRepo = new ProductTest();
+        ICategoryRepo categoryRepo = new CategoryTest();
+
+        [Test]
+        public void Index_ReturnsAView()
         {
-            IProductRepo repo = new ProductTest();
-            HomeController controller = new HomeController(repo);
+            HomeController controller = new HomeController(productRepo);
 
-            ViewResult result = controller.Index() as ViewResult;
+            ViewResult view = controller.Index() as ViewResult;
+
+            Assert.IsNotNull(view);
+        }
+        public void Index_ReturnsAModel()
+        {
+            HomeController controller = new HomeController(productRepo);
+
+            ViewResult view = controller.Index() as ViewResult;
             
+            Assert.IsNotNull(view.Model);
+        }
 
+        [Test]
+        public void Product_ReturnsAView()
+        {
+            HomeController controller = new HomeController(productRepo);
+
+            ViewResult result = controller.Products() as ViewResult;
+            
             Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Model);            
+
         }
 
-        [TestMethod]
-        public void ProductsTest()
+        [TestCase("Camera",1)]
+        [TestCase("Computer", 2)]
+        [TestCase("Phone", 3)]
+        public void Product_GivenACategoryParameter_ReturnsAListOfProductsInACategory(string category, int catId)
         {
-            IProductRepo repo = new ProductTest();
-            HomeController controller = new HomeController(repo);
-            
-            ViewResult result = controller.Products(category:"camera") as ViewResult;
-            var prod = result.Model as IEnumerable<Product>;
+            HomeController controller = new HomeController(productRepo);
 
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Model);
-            Assert.AreEqual(prod.First().CategoryId,1);
+            ViewResult view = controller.Products(category: category) as ViewResult;
+            var products = view.Model as IEnumerable<Product>;
+            Assert.AreEqual(products.First().CategoryId, catId);
         }
-        [TestMethod]
-        public void ProductsParameterTest()
+        
+
+        [Test]
+        public void GetCategories_returnsAViewResult()
         {
-            IProductRepo repo = new ProductTest();
-            
-            HomeController controller = new HomeController(repo);
-
-            ViewResult result = controller.Products(category:"camera") as ViewResult;
-            var prod = result.Model as IEnumerable<Product>;
-
-            ViewResult result1 = controller.Products(category:"phone") as ViewResult;
-            var prod1 = result.Model as IEnumerable<Product>;
-
-
-            Assert.AreEqual(prod1.First().CategoryId, 3);
-            Assert.AreEqual(prod.First().CategoryId, 1);
+            HomeController controller = new HomeController(categoryRepo);
+            var view = controller.GetCategories() as PartialViewResult;
+            Assert.IsNotNull(view);
         }
 
-        [TestMethod]
-        public void GetCategories()
+        [Test]
+        public void GetCategories_returnsListOfCategories()
         {
-            ICategoryRepo repo = new CategoryTest();
-            HomeController controller = new HomeController(repo);
-
-            var result = controller.GetCategories() as ViewResult;
-            //var s = result.Model as IEnumerable<string>;
-
+            HomeController controller = new HomeController(categoryRepo);
+            var result = controller.GetCategories() as PartialViewResult;
             Assert.IsNotNull(result.Model);
         }
+
 
     }
 }
